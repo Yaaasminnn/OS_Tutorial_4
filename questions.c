@@ -18,7 +18,7 @@ void initialize_game(void)
     // ================= Programming Category =================
     strcpy(questions[index].category, "programming");
     strcpy(questions[index].question, "This language is used to write operating systems.");
-    strcpy(questions[index].answer, "C");
+    strcpy(questions[index].answer, "c");
     questions[index].value = 100;
     questions[index].answered = false;
     index++;
