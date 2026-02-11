@@ -21,6 +21,7 @@ clean:
 cleanup:
 	rm -f $(OBJECTS) *~
 
+
 help:
 	@echo "Valid targets:"
 	@echo "  all:    generates all binary files"
