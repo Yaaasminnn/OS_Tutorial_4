@@ -12,10 +12,12 @@
 #include "questions.h"
 #include "players.h"
 #include "jeopardy.h"
+#include <time.h>
 
 // Put macros or constants here using #define
 #define BUFFER_LEN 256
 #define NUM_PLAYERS 4
+
 
 // Put global environment variables here
 
@@ -42,7 +44,7 @@ void toLowerCase(char *str) {
 }
 
 // Processes the answer from the user containing what is or who is and tokenizes it to retrieve the answer.
-void tokenize(char *input, char **tokens) {
+void tokenize(char *input, tokens_t *tokens) {
     // uncapitalize it
     // tokenize
 
@@ -87,37 +89,62 @@ int main(int argc, char *argv[])
         char* pname;
         printf("Please enter player %d's name\n", i);
         scanf("%c", pname);
-        if (!player_exists(players, NUM_PLAYERS, pname))
-            players[i] = {
-                    pname,
-                    0
-            };
+        if (!player_exists(players, NUM_PLAYERS, pname)) players[i] = { pname,0};
         else {
             i--;
             printf("Error! name already exists '%s'\n", pname);
             continue;
         }
     }
-    
-    // initialize each of the players in the array
 
-
+    int pnum = 0;
     // Perform an infinite loop getting command input from users until game ends
-    while (fgets(buffer, BUFFER_LEN, stdin) != NULL)
-    {
+    while (fgets(buffer, BUFFER_LEN, stdin) != NULL) {
         // Call functions from the questions and players source files
         display_categories();
+
         // choose the player
+        player current_player = players[rand() % (NUM_PLAYERS - 0 + 1) + 0];
+        printf("Current player: %s\n", current_player.name);
+
         // ask the player for their category and value
-        display_question();
+        char *cat;
+        int *val;
+        printf("Choose which category\n");
+        scanf("%s", cat);
+        printf("Choose which value\n")
+        scanf("%d", val);
+
+        display_question(cat, *val);
+
         // ask for answer. what is X / who is why
+        char *ans;
+        tokens_t tokens;
+        printf("What is your answer (Phrased as 'What is X' / 'Who is Y')\n");
+        scanf("%s", ans);
+
         // tokenize
+        tokenize(ans, &tokens);
         // feed token[2] to valid answer
-        // if correct, update score
+        if (valid_answer(cat, *val, tokens[2])) {
+            // if correct, update score
+            update_score(players, NUM_PLAYERS, current_player.name, *val);
+        }
 
         // Execute the game until all questions are answered
+        bool all_answered = true;
+        for (int i=0; i < NUM_QUESTIONS; i++) {
+            if (!questions[i].answered) {
+                all_answered = false;
+                break;
+            }
+        }
+        show_results(players, NUM_PLAYERS);
+        if (all_answered) { // Display the final results and exit
 
-        // Display the final results and exit
+            break;
+        }
+
     }
     return EXIT_SUCCESS;
 }
