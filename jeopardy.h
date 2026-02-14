@@ -1,7 +1,7 @@
 /*
  * Tutorial 4 Jeopardy Project for SOFE 3950U: Operating Systems
  *
- * Copyright (C) 2026, <GROUP NUMBER>
+ * Copyright (C) 2026, 6
  * All rights reserved.
  *
  */
@@ -9,7 +9,7 @@
 #define JEOPARDY_H_
 
 #define MAX_LEN 256
-typedef char[MAX_LEN][MAX_LEN] tokens_t;
+typedef char tokens_t [MAX_LEN][MAX_LEN] ;
 
 // Processes the answer from the user containing what is or who is and tokenizes it to retrieve the answer.
 extern void tokenize(char *input, tokens_t *tokens);

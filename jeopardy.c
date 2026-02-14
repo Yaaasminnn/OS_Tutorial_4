@@ -1,7 +1,7 @@
 /*
  * Tutorial 4 Jeopardy Project for SOFE 3950U: Operating Systems
  *
- * Copyright (C) 2026, <GROUP NUMBER>
+ * Copyright (C) 2026, 6
  * All rights reserved.
  *
  */
@@ -23,9 +23,9 @@
 
 // utility functions
 void swap(player* players, int i, int j) {
-    player temp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = temp;
+    player temp = players[i];
+    players[i] = players[j];
+    players[j] = temp;
 }
 
 void bubble_sort(player *players, int num_players) {
@@ -86,10 +86,10 @@ int main(int argc, char *argv[])
 
     // Prompt for players names and initialize them
     for (int i=0; i < NUM_PLAYERS; i++) {
-        char* pname;
+        char pname[BUFFER_LEN];
         printf("Please enter player %d's name\n", i);
-        scanf("%c", pname);
-        if (!player_exists(players, NUM_PLAYERS, pname)) players[i] = { pname,0};
+        scanf("%s", pname);
+        if (!player_exists(players, NUM_PLAYERS, pname)) players[i] = (player){pname,0};
         else {
             i--;
             printf("Error! name already exists '%s'\n", pname);
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
         int *val;
         printf("Choose which category\n");
         scanf("%s", cat);
-        printf("Choose which value\n")
+        printf("Choose which value\n");
         scanf("%d", val);
 
         display_question(cat, *val);
