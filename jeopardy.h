@@ -9,7 +9,7 @@
 #define JEOPARDY_H_
 
 #define MAX_LEN 256
-typedef char tokens_t [MAX_LEN][MAX_LEN] ;
+typedef char tokens_t [MAX_LEN][MAX_LEN];
 
 // Processes the answer from the user containing what is or who is and tokenizes it to retrieve the answer.
 extern void tokenize(char *input, tokens_t *tokens);

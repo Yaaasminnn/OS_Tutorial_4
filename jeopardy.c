@@ -13,6 +13,7 @@
 #include "players.h"
 #include "jeopardy.h"
 #include <time.h>
+#include <ctype.h>
 
 // Put macros or constants here using #define
 #define BUFFER_LEN 256
@@ -39,7 +40,7 @@ void bubble_sort(player *players, int num_players) {
 
 void toLowerCase(char *str) {
     for (int i = 0; str[i]; i++) {
-        str[i] = tolower(str[i]);
+        str[i] = tolower((unsigned char)str[i]);
     }
 }
 
@@ -47,7 +48,6 @@ void toLowerCase(char *str) {
 void tokenize(char *input, tokens_t *tokens) {
     // uncapitalize it
     // tokenize
-
     toLowerCase(input); // fix case
     char* token;
     char* delim = " ";
@@ -55,10 +55,10 @@ void tokenize(char *input, tokens_t *tokens) {
     int i=1;
     token = strtok(input, delim);
     printf("token[%d]: %s\n", 0, token);
-    strcpy(tokens[0], token);
+    strcpy((*tokens)[0], token);
     while (token != NULL) {
         token = strtok(NULL, delim);
-        strcpy(tokens[i], token);
+        strcpy((*tokens)[i], token);
         printf("token[%d]: %s\n", i, token);
         i++;
     }
@@ -73,7 +73,7 @@ void show_results(player *players, int num_players) {
 }
 
 
-int main(int argc, char *argv[])
+int main(void)
 {
     // An array of 4 players, may need to be a pointer if you want it set dynamically
     player players[NUM_PLAYERS];
@@ -89,15 +89,19 @@ int main(int argc, char *argv[])
         char pname[BUFFER_LEN];
         printf("Please enter player %d's name\n", i);
         scanf("%s", pname);
-        if (!player_exists(players, NUM_PLAYERS, pname)) players[i] = (player){pname,0};
+        if (!player_exists(players, NUM_PLAYERS, pname)) {
+            // Use strncpy to copy pname into players[i].name and initialize score to 0
+            strncpy(players[i].name, pname, MAX_LEN - 1);
+            // Ensure null termination
+            players[i].name[MAX_LEN - 1] = '\0'; 
+            players[i].score = 0;
+        }
         else {
             i--;
             printf("Error! name already exists '%s'\n", pname);
             continue;
         }
     }
-
-    int pnum = 0;
     // Perform an infinite loop getting command input from users until game ends
     while (fgets(buffer, BUFFER_LEN, stdin) != NULL) {
         // Call functions from the questions and players source files
@@ -108,8 +112,8 @@ int main(int argc, char *argv[])
         printf("Current player: %s\n", current_player.name);
 
         // ask the player for their category and value
-        char *cat;
-        int *val;
+        char cat[BUFFER_LEN];
+        int *val = malloc(sizeof(int));
         printf("Choose which category\n");
         scanf("%s", cat);
         printf("Choose which value\n");
@@ -118,7 +122,7 @@ int main(int argc, char *argv[])
         display_question(cat, *val);
 
         // ask for answer. what is X / who is why
-        char *ans;
+        char ans[BUFFER_LEN];
         tokens_t tokens;
         printf("What is your answer (Phrased as 'What is X' / 'Who is Y')\n");
         scanf("%s", ans);
@@ -144,7 +148,8 @@ int main(int argc, char *argv[])
 
             break;
         }
-
+    // free malloced memory
+    free(val);
     }
     return EXIT_SUCCESS;
 }
