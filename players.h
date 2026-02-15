@@ -9,8 +9,9 @@
 #define PLAYERS_H_
 
 #include <stdbool.h>
+#include "questions.h"
 
-#define MAX_LEN 256
+//#define MAX_LEN 256
 
 // Player struct for each player
 typedef struct {
