@@ -10,6 +10,8 @@
 #include <string.h>
 #include "questions.h"
 
+question questions[NUM_QUESTIONS];
+
 // Initializes the array of questions for the game
 void initialize_game(void)
 {
@@ -118,7 +120,7 @@ void display_categories(void)
 }
 
 // Displays the question for the category and dollar value
-void display_question(char *category, int value)
+bool display_question(char *category, int value)
 {
     for (int i = 0; i < NUM_QUESTIONS; i++) {
         if (strcmp(questions[i].category, category) == 0 &&
@@ -126,11 +128,12 @@ void display_question(char *category, int value)
             !questions[i].answered) {
 
             printf("\nQuestion: %s\n", questions[i].question);
-            return;
+            return true;
         }
     }
 
     printf("Question not found.\n");
+    return false;
 }
 
 // Returns true if the answer is correct for the question for that category and dollar value
@@ -144,7 +147,7 @@ bool valid_answer(char *category, int value, char *answer)
 
             questions[i].answered = true;
 
-            if (strcasecmp(questions[i].answer, answer) == 0) {
+            if (strcmp(questions[i].answer, answer) == 0) {
                 return true;
             } else {
                 printf("Correct answer: %s\n", questions[i].answer);

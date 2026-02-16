@@ -45,23 +45,30 @@ void toLowerCase(char *str) {
 }
 
 // Processes the answer from the user containing what is or who is and tokenizes it to retrieve the answer.
-void tokenize(char *input, tokens_t *tokens) {
+char* tokenize(char *input) {
     // uncapitalize it
     // tokenize
     toLowerCase(input); // fix case
+    printf("%s\n", input);
     char* token;
     char* delim = " ";
-    //char tokens[3];
+    //char *tkn;
     int i=1;
-    token = strtok(input, delim);
-    printf("token[%d]: %s\n", 0, token);
-    strcpy((*tokens)[0], token);
-    while (token != NULL) {
-        token = strtok(NULL, delim);
-        strcpy((*tokens)[i], token);
-        printf("token[%d]: %s\n", i, token);
+    char* tkn = strtok(input, delim);
+    printf("token[%d]: %s\n", 0, tkn);
+    //strcpy(tokens[0], token);
+    while (tkn != NULL) {
+        tkn = strtok(NULL, " ");
+        //strcpy((*tokens)[i], token);
+        printf("token[%d]: %s\n", i, tkn);
         i++;
+        if (i==3) break;
     }
+    printf("answer: %s\n", tkn);
+    token = tkn;
+    //strcpy(token, tkn);
+    //*token = token;
+    return token;
 }
 
 // Displays the game results for each player, their name and final score, ranked from first to last place
@@ -119,18 +126,25 @@ int main(void)
         printf("Choose which value\n");
         scanf("%d", val);
 
-        display_question(cat, *val);
+        if (!display_question(cat, *val))
+            continue;
 
         // ask for answer. what is X / who is why
         char ans[BUFFER_LEN];
         tokens_t tokens;
         printf("What is your answer (Phrased as 'What is X' / 'Who is Y')\n");
-        scanf("%s", ans);
+        //scanf(" %99[^\\n]", ans);
+
+        fgets(ans, BUFFER_LEN, stdin);
+        fgets(ans, BUFFER_LEN, stdin);
+        ans[strcspn(ans, "\n")] = '\0';
+        printf("%s\n", ans);
 
         // tokenize
-        tokenize(ans, &tokens);
+        char *token = tokenize(ans);
+        printf("answer: %s\n", token);
         // feed token[2] to valid answer
-        if (valid_answer(cat, *val, tokens[2])) {
+        if (valid_answer(cat, *val, token)) {
             // if correct, update score
             update_score(players, NUM_PLAYERS, current_player.name, *val);
         }
@@ -148,8 +162,9 @@ int main(void)
 
             break;
         }
-    // free malloced memory
-    free(val);
+        // free malloced memory
+        free(val);
+        continue;
     }
     return EXIT_SUCCESS;
 }

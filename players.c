@@ -29,10 +29,11 @@ void update_score(player *players, int num_players, char *name, int score)
 {
   for (int i = 0; i < num_players; i++)
   {
-    if (strcmp(name, players[i].name) == 0)
-      players[i].score += score; // if the player's name exists
-                                 // their score will be updated
-    break; // break is used so that the loop stops after the first
-           // match and update
+    if (strcmp(name, players[i].name) == 0) {
+        players[i].score += score; // if the player's name exists
+        // their score will be updated
+        break; // break is used so that the loop stops after the first
+        // match and update
+    }
   }
 }
