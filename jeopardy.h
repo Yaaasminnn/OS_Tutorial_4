@@ -16,6 +16,8 @@ typedef char tokens_t [MAX_LEN][MAX_LEN];
 // Processes the answer from the user containing what is or who is and tokenizes it to retrieve the answer.
 extern char* tokenize(char *input);
 
+extern void display_winner(player *players, int num_players);
+
 // Displays the game results for each player, their name and final score, ranked from first to last place
 extern void show_results(player *players, int num_players);
 

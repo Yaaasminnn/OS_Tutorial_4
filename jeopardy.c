@@ -32,7 +32,7 @@ void swap(player* players, int i, int j) {
 void bubble_sort(player *players, int num_players) {
     for (int i=0; i < num_players; i++) {
         for (int j = 0; j< num_players - i - 1; j++) {
-            if (players[j].score > players[j+1].score)
+            if (players[j].score < players[j+1].score)
                 swap(players, j, j+1);
         }
     }
@@ -48,27 +48,40 @@ void toLowerCase(char *str) {
 char* tokenize(char *input) {
     // uncapitalize it
     // tokenize
+    char tokens[MAX_LEN][MAX_LEN];
     toLowerCase(input); // fix case
-    printf("%s\n", input);
+    //printf("%s\n", input);
     char* token;
     char* delim = " ";
     //char *tkn;
     int i=1;
     char* tkn = strtok(input, delim);
-    printf("token[%d]: %s\n", 0, tkn);
+    //printf("token[%d]: %s\n", 0, tkn);
     //strcpy(tokens[0], token);
     while (tkn != NULL) {
-        tkn = strtok(NULL, " ");
-        //strcpy((*tokens)[i], token);
-        printf("token[%d]: %s\n", i, tkn);
+        tkn = strtok(NULL, delim);
+        if (tkn == NULL && i<2) {
+            printf("Answer in 'what is X / who is Y' \n");
+            return NULL;
+        }
+        else if (tkn == NULL) {
+            break;
+        }
+        //printf("token[%d]: %s\n", i, tkn);
+        strcpy(tokens[i], tkn);
         i++;
-        if (i==3) break;
+        //if (i==3) break;
     }
-    printf("answer: %s\n", tkn);
-    token = tkn;
+    //printf("answer: %s\n", tkn);
+    token = tokens[i-1];
     //strcpy(token, tkn);
     //*token = token;
     return token;
+}
+
+void display_winner(player *players, int num_players) {
+    bubble_sort(players, num_players);
+    printf("Congratulations to player '%s' for winning!\n", players[0].name);
 }
 
 // Displays the game results for each player, their name and final score, ranked from first to last place
@@ -138,10 +151,13 @@ int main(void)
         fgets(ans, BUFFER_LEN, stdin);
         fgets(ans, BUFFER_LEN, stdin);
         ans[strcspn(ans, "\n")] = '\0';
-        printf("%s\n", ans);
+        //printf("%s\n", ans);
 
         // tokenize
         char *token = tokenize(ans);
+        if (token == NULL) {
+            continue;
+        }
         printf("answer: %s\n", token);
         // feed token[2] to valid answer
         if (valid_answer(cat, *val, token)) {
@@ -159,12 +175,12 @@ int main(void)
         }
         show_results(players, NUM_PLAYERS);
         if (all_answered) { // Display the final results and exit
-
+            display_winner(players, NUM_PLAYERS);
             break;
         }
         // free malloced memory
         free(val);
-        continue;
+        printf("Press Enter to continue\n");
     }
     return EXIT_SUCCESS;
 }
